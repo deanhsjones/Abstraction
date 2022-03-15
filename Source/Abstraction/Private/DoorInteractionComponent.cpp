@@ -1,8 +1,10 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "DoorInteractionComponent.h"
 #include "GameFramework/Actor.h"
+#include "GameFramework/PlayerController.h"
+#include "Engine/TriggerBox.h"
+#include "Engine/World.h"
 
 // Sets default values for this component's properties
 UDoorInteractionComponent::UDoorInteractionComponent()
@@ -38,17 +40,23 @@ void UDoorInteractionComponent::TickComponent(float DeltaTime, ELevelTick TickTy
 
 	/*FRotator CurrentRotation = GetOwner()->GetActorRotation();*/
 	/*if (!CurrentRotation.Equals(FinalRotation, 5.0f))*/
-	if(CurrentRotationTime < TimeToRotate)
+	if (CurrentRotationTime < TimeToRotate)
 	{
-		CurrentRotationTime += DeltaTime;
-		const float RotationAlpha = FMath::Clamp(CurrentRotationTime / TimeToRotate, 0.0f, 1.0f);
-		const FRotator CurrentRotation = FMath::Lerp(StartRotation, FinalRotation, RotationAlpha);
+		if (TriggerBox && GetWorld() && GetWorld()->GetFirstLocalPlayerFromController())
+		{
+			APawn* PlayerPawn = GetWorld()->GetFirstPlayerController()->GetPawn();
+			if (PlayerPawn && TriggerBox->IsOverlappingActor(PlayerPawn))
+			{
+				CurrentRotationTime += DeltaTime;
+				const float RotationAlpha = FMath::Clamp(CurrentRotationTime / TimeToRotate, 0.0f, 1.0f);
+				const FRotator CurrentRotation = FMath::Lerp(StartRotation, FinalRotation, RotationAlpha);
 
-		//CurrentRotation += DeltaRotation * DeltaTime;
-		GetOwner()->SetActorRotation(CurrentRotation);
-		UE_LOG(LogTemp, Warning, TEXT("%s"), *GetOwner()->GetActorRotation().ToString());
+				//CurrentRotation += DeltaRotation * DeltaTime;
+				GetOwner()->SetActorRotation(CurrentRotation);
+				//UE_LOG(LogTemp, Warning, TEXT("%s"), *GetOwner()->GetActorRotation().ToString());
+			}
+		}
+		// ...
 	}
-
-	// ...
 }
 
