@@ -22,9 +22,12 @@ void UDoorInteractionComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	DesiredRotation = FRotator(0.0f, 90.0f, 0.0f);
-	StartRotation = GetOwner()->GetActorRotation();
-	FinalRotation = GetOwner()->GetActorRotation() + DesiredRotation;
+	//DesiredRotation = FRotator(0.0f, 90.0f, 0.0f);
+	InitialYaw = GetOwner()->GetActorRotation().Yaw;
+	CurrentYaw = InitialYaw;
+	OpenAngle += InitialYaw;
+	//FinalRotation = GetOwner()->GetActorRotation() + DesiredRotation;
+	
 	/*GetOwner()->SetActorRotation(DesiredRotation);*/
 	CurrentRotationTime = 0.0f;
 
@@ -40,23 +43,51 @@ void UDoorInteractionComponent::TickComponent(float DeltaTime, ELevelTick TickTy
 
 	/*FRotator CurrentRotation = GetOwner()->GetActorRotation();*/
 	/*if (!CurrentRotation.Equals(FinalRotation, 5.0f))*/
-	if (CurrentRotationTime < TimeToRotate)
-	{
+	//if (CurrentRotationTime < TimeToRotate)
+	//{
 		if (TriggerBox && GetWorld() && GetWorld()->GetFirstLocalPlayerFromController())
 		{
 			APawn* PlayerPawn = GetWorld()->GetFirstPlayerController()->GetPawn();
 			if (PlayerPawn && TriggerBox->IsOverlappingActor(PlayerPawn))
 			{
-				CurrentRotationTime += DeltaTime;
-				const float RotationAlpha = FMath::Clamp(CurrentRotationTime / TimeToRotate, 0.0f, 1.0f);
-				const FRotator CurrentRotation = FMath::Lerp(StartRotation, FinalRotation, RotationAlpha);
+				//CurrentRotationTime += DeltaTime;
+				//const float RotationAlpha = FMath::Clamp(CurrentRotationTime / TimeToRotate, 0.0f, 1.0f);
+				//const FRotator CurrentRotation = FMath::Lerp(StartRotation, FinalRotation, RotationAlpha);
 
-				//CurrentRotation += DeltaRotation * DeltaTime;
-				GetOwner()->SetActorRotation(CurrentRotation);
-				//UE_LOG(LogTemp, Warning, TEXT("%s"), *GetOwner()->GetActorRotation().ToString());
+				////CurrentRotation += DeltaRotation * DeltaTime;
+				//GetOwner()->SetActorRotation(CurrentRotation);
+				////UE_LOG(LogTemp, Warning, TEXT("%s"), *GetOwner()->GetActorRotation().ToString());
+
+				OpenDoor(DeltaTime);
+				DoorLastOpened = GetWorld()->GetTimeSeconds();
 			}
+			else
+			{
+				if (GetWorld()->GetTimeSeconds() - DoorLastOpened > DoorCloseDelay)
+				{
+					CloseDoor(DeltaTime);
+				}
+			}
+
 		}
+		
 		// ...
-	}
+	//}
 }
 
+void UDoorInteractionComponent::OpenDoor(float DeltaTime)
+{
+	CurrentYaw = FMath::Lerp(CurrentYaw, OpenAngle, DeltaTime * DoorOpenSpeed);
+	FRotator DoorRotation = GetOwner()->GetActorRotation();
+	DoorRotation.Yaw = CurrentYaw;
+	GetOwner()->SetActorRotation(DoorRotation);
+
+}
+
+void UDoorInteractionComponent::CloseDoor(float DeltaTime)
+{
+	CurrentYaw = FMath::Lerp(CurrentYaw, InitialYaw, DeltaTime * DoorCloseSpeed);
+	FRotator DoorRotation = GetOwner()->GetActorRotation();
+	DoorRotation.Yaw = CurrentYaw;
+	GetOwner()->SetActorRotation(DoorRotation);
+}
