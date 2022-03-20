@@ -26,7 +26,9 @@ protected:
 	UPROPERTY(EditAnywhere)
 	FRotator DesiredRotation = FRotator::ZeroRotator;
 
+	UPROPERTY(EditAnywhere)
 	FRotator StartRotation = FRotator::ZeroRotator;
+	
 	FRotator FinalRotation = FRotator::ZeroRotator;
 
 	UPROPERTY(EditAnywhere)
@@ -35,11 +37,23 @@ protected:
 	float CurrentRotationTime = 0.0f;
 
 	UPROPERTY(EditAnywhere)
-		ATriggerBox* TriggerBox;
+		ATriggerBox* TriggerBox1;
+	UPROPERTY(EditAnywhere)
+		ATriggerBox* TriggerBox2;
 
 
 	UPROPERTY(EditAnywhere)
 		FRuntimeFloatCurve OpenCurve;
+
+	UPROPERTY(EditAnywhere)
+		float DoorCloseDelay = 0.4f;
+
+	float DoorLastOpened;
+
+	void OpenDoor(float DeltaTime);
+	void CloseDoor(float DeltaTime);
+
+	bool bDoorIsOpen = false;
 
 
 public:	
