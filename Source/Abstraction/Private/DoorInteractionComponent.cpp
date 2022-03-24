@@ -75,7 +75,7 @@ void UDoorInteractionComponent::TickComponent(float DeltaTime, ELevelTick TickTy
 		}
 	}
 	else 
-		if (bDoorIsOpen && !(TriggerBox1->IsOverlappingActor(PlayerPawn)) && !(TriggerBox2->IsOverlappingActor(PlayerPawn)) )
+		if (PlayerPawn && bDoorIsOpen && !(TriggerBox1->IsOverlappingActor(PlayerPawn)) && !(TriggerBox2->IsOverlappingActor(PlayerPawn)) )
 		{
 			CloseDoor(DeltaTime);
 		}
