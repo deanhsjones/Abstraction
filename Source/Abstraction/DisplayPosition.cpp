@@ -35,7 +35,7 @@ void UDisplayPosition::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 FString ObjectName = GetOwner()->GetName();
 	FString ObjectPosition = GetOwner()->GetActorLocation().ToString();
 	//UE_LOG(LogTemp, Warning, TEXT("%s is at %s"), *ObjectName, *ObjectPosition);
-	GEngine->AddOnScreenDebugMessage(-1, 0.01f, FColor::Red, FString::Printf(TEXT("%s is at %s"), *ObjectName, *ObjectPosition));
+	//GEngine->AddOnScreenDebugMessage(-1, 0.01f, FColor::Red, FString::Printf(TEXT("%s is at %s"), *ObjectName, *ObjectPosition));
 	
 
 
