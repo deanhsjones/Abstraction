@@ -8,6 +8,15 @@
 #include "DoorInteractionComponent.generated.h"
 
 class ATriggerBox;
+class IConsoleVariable;
+
+UENUM()
+enum class EDoorState
+{
+	DS_Closed = 0	UMETA(DisplayName = "Closed"), 
+	DS_Open = 1		UMETA(DisplayName = "Open"), 
+	DS_Locked = 2	UMETA(DisplayName = "Locked"),
+};
 
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
@@ -19,20 +28,25 @@ public:
 	// Sets default values for this component's properties
 	UDoorInteractionComponent();
 
+	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+
+	static void OnDebugToggled(IConsoleVariable* var);
+	void DebugDraw();
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
 	UPROPERTY(EditAnywhere)
-	FRotator DesiredRotation = FRotator::ZeroRotator;
+		FRotator DesiredRotation; // = FRotator::ZeroRotator;
 
 	UPROPERTY(EditAnywhere)
-	FRotator StartRotation = FRotator::ZeroRotator;
-	
-	FRotator FinalRotation = FRotator::ZeroRotator;
+		FRotator StartRotation; // = FRotator::ZeroRotator;
 
 	UPROPERTY(EditAnywhere)
 		float TimeToRotate = 1.0f;
+
+	FRotator FinalRotation = FRotator::ZeroRotator;
 
 	float CurrentRotationTime = 0.0f;
 
@@ -45,20 +59,22 @@ protected:
 	UPROPERTY(EditAnywhere)
 		FRuntimeFloatCurve OpenCurve;
 
-	UPROPERTY(EditAnywhere)
-		float DoorCloseDelay = 0.4f;
+	UPROPERTY(BlueprintReadOnly)
+		EDoorState DoorState;
 
-	float DoorLastOpened;
+
+
 
 	void OpenDoor(float DeltaTime);
 	void CloseDoor(float DeltaTime);
 
+	UPROPERTY(BlueprintReadOnly)
 	bool bDoorIsOpen = false;
 
 
 public:	
 	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	
 
 		
 };
