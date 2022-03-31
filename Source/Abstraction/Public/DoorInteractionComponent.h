@@ -14,8 +14,9 @@ UENUM()
 enum class EDoorState
 {
 	DS_Closed = 0	UMETA(DisplayName = "Closed"), 
-	DS_Open = 1		UMETA(DisplayName = "Open"), 
-	DS_Locked = 2	UMETA(DisplayName = "Locked"),
+	DS_Opening = 1	UMETA(DisplayName = "Opening"),
+	DS_Open = 2		UMETA(DisplayName = "Open"), 
+	DS_Locked = 3	UMETA(DisplayName = "Locked"),
 };
 
 
@@ -30,6 +31,13 @@ public:
 
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
+	
+	//delegate that broadcasts door open
+	DECLARE_EVENT(FDoorInteractionComponent, FOpened)
+	FOpened& OnOpened() { return OpenedEvent; }
+
+	FOpened OpenedEvent;	
+
 	static void OnDebugToggled(IConsoleVariable* var);
 	void DebugDraw();
 
@@ -38,10 +46,10 @@ protected:
 	virtual void BeginPlay() override;
 
 	UPROPERTY(EditAnywhere)
-		FRotator DesiredRotation; // = FRotator::ZeroRotator;
+		FRotator DesiredRotation = FRotator::ZeroRotator;
 
 	UPROPERTY(EditAnywhere)
-		FRotator StartRotation; // = FRotator::ZeroRotator;
+		FRotator StartRotation = FRotator::ZeroRotator;
 
 	UPROPERTY(EditAnywhere)
 		float TimeToRotate = 1.0f;
@@ -65,8 +73,8 @@ protected:
 
 
 
-	void OpenDoor(float DeltaTime);
-	void CloseDoor(float DeltaTime);
+	//void OpenDoor(float DeltaTime);
+	//void CloseDoor(float DeltaTime);
 
 	UPROPERTY(BlueprintReadOnly)
 	bool bDoorIsOpen = false;

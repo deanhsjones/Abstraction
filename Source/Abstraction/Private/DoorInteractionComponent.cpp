@@ -5,6 +5,7 @@
 #include "GameFramework/PlayerController.h"
 #include "Engine/TriggerBox.h"
 #include "Engine/World.h"
+#include "ObjectiveWorldSubsystem.h"
 
 #include "DrawDebugHelpers.h"
 
@@ -35,7 +36,7 @@ void UDoorInteractionComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	DesiredRotation;//open angle
+	//DesiredRotation;//open angle
 	StartRotation = GetOwner()->GetActorRotation();	//initialyaw
 	FinalRotation = GetOwner()->GetActorRotation() + DesiredRotation; //closedyaw
 	const FRotator CurrentRotation = FRotator::ZeroRotator;
@@ -44,6 +45,12 @@ void UDoorInteractionComponent::BeginPlay()
 
 	/*GetOwner()->SetActorRotation(DesiredRotation);*/
 	CurrentRotationTime = 0.0f;
+
+	UObjectiveWorldSubsystem* ObjectiveWorldSubsystem = GetWorld()->GetSubsystem<UObjectiveWorldSubsystem>();
+	if (ObjectiveWorldSubsystem)
+	{
+		OpenedEvent.AddUObject(ObjectiveWorldSubsystem, &UObjectiveWorldSubsystem::OnObjectiveCompleted); //bind openedevent to Uobject(objworld subsystem) and the function within it
+	}
 
 	// ...
 	
@@ -55,91 +62,40 @@ void UDoorInteractionComponent::TickComponent(float DeltaTime, ELevelTick TickTy
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	float CurrentTime = GetWorld()->GetTimeSeconds();
-	//UE_LOG(LogTemp, Warning, TEXT("CurrentTime %f"), &CurrentTime);
-
-	/*FRotator CurrentRotation = GetOwner()->GetActorRotation();*/
-	/*if (!CurrentRotation.Equals(FinalRotation, 5.0f))*/
-	APawn* PlayerPawn = GetWorld()->GetFirstPlayerController()->GetPawn();
-	if (CurrentRotationTime < TimeToRotate)
+	if (DoorState == EDoorState::DS_Closed)
 	{
-		/*UE_LOG(LogTemp, Warning, TEXT("CurrentRotationTime %f, TimeToRotate %f"), &CurrentRotationTime, &TimeToRotate);*/
-		
-		if (!bDoorIsOpen && TriggerBox1 && GetWorld() && GetWorld()->GetFirstLocalPlayerFromController())
+		if (TriggerBox1 && GetWorld() && GetWorld()->GetFirstLocalPlayerFromController())
 		{
+			APawn* PlayerPawn = GetWorld()->GetFirstPlayerController()->GetPawn();
 			if (PlayerPawn && TriggerBox1->IsOverlappingActor(PlayerPawn))
 			{
-				CurrentRotationTime += DeltaTime;
-				OpenDoor(DeltaTime);
-
-
-
+				DoorState = EDoorState::DS_Opening;
+				CurrentRotationTime = 0.0f;
 			}
-			/*if (PlayerPawn && TriggerBox2->IsOverlappingActor(PlayerPawn))
-			{
-				CurrentRotationTime += DeltaTime;
-				
-				OpenDoor(DeltaTime);
-
-
-
-			}*/
-
 		}
 	}
-	else 
-		if (PlayerPawn && bDoorIsOpen && !(TriggerBox1->IsOverlappingActor(PlayerPawn)) ) //&& !(TriggerBox2->IsOverlappingActor(PlayerPawn))
-		{
-			CloseDoor(DeltaTime);
-		}
-				DebugDraw();
-}
 
-void UDoorInteractionComponent::OpenDoor(float DeltaTime)
-{
-	
-
+	else if (DoorState == EDoorState::DS_Opening)
+	{
+				CurrentRotationTime += DeltaTime;
 				const float TimeRatio = FMath::Clamp(CurrentRotationTime / TimeToRotate, 0.1f, 1.0f);
 				const float RotationAlpha = OpenCurve.GetRichCurveConst()->Eval(TimeRatio);
 				const FRotator CurrentRotation = FMath::Lerp(CurrentRotation, FinalRotation, RotationAlpha);
-				APawn* PlayerPawn = GetWorld()->GetFirstPlayerController()->GetPawn();
-				//CurrentRotation += DeltaRotation * DeltaTime;
-				if (TriggerBox1->IsOverlappingActor(PlayerPawn))
-				{
-					GetOwner()->SetActorRotation(CurrentRotation);
-				}
+				GetOwner()->SetActorRotation(CurrentRotation);
 
-				/*if (TriggerBox2->IsOverlappingActor(PlayerPawn))
-				{
-					GetOwner()->SetActorRotation(CurrentRotation * -1);
-				}*/
-
-				
-				//UE_LOG(LogTemp, Warning, TEXT("Open door %s"), *GetOwner()->GetActorRotation().ToString());
-				//UE_LOG(LogTemp, Warning, TEXT("Doorlastopen %f"), &DoorLastOpened);
-				if (CurrentRotation == FinalRotation)
+				if (TimeRatio >= 1.0f)
 				{
 					DoorState = EDoorState::DS_Open;
-					bDoorIsOpen = true;
+					GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, TEXT("DoorOpened"));
+					OpenedEvent.Broadcast();
 				}
-	
+		//OpenDoor(DeltaTime);
+	}
+
+
+	DebugDraw();
 }
 
-void UDoorInteractionComponent::CloseDoor(float DeltaTime)
-{
-	CurrentRotationTime += DeltaTime;
-	//UE_LOG(LogTemp, Warning, TEXT("RotationTime %f"), CurrentRotationTime);
-
-	const float TimeRatio = FMath::Clamp(CurrentRotationTime / TimeToRotate, 0.0f, 3.0f);
-	const float RotationAlpha = OpenCurve.GetRichCurveConst()->Eval(TimeRatio);
-	const FRotator CurrentRotation = FMath::Lerp(FinalRotation, StartRotation, RotationAlpha);
-	GetOwner()->SetActorRotation(CurrentRotation);
-	//UE_LOG(LogTemp, Warning, TEXT("Close Door %s"), *GetOwner()->GetActorRotation().ToString());
-	DoorState = EDoorState::DS_Closed;
-	bDoorIsOpen = false;
-	CurrentRotationTime = 0;
-	
-}
 
 void UDoorInteractionComponent::OnDebugToggled(IConsoleVariable* var)
 {
@@ -156,3 +112,46 @@ void UDoorInteractionComponent::DebugDraw()
 		DrawDebugString(GetWorld(), Offset, EnumAsString, GetOwner(), FColor::Blue, 2.0f);
 	}
 }
+
+
+//void UDoorInteractionComponent::OpenDoor(float DeltaTime)
+//{
+	
+
+				/*APawn* PlayerPawn = GetWorld()->GetFirstPlayerController()->GetPawn();
+				
+				if (TriggerBox1->IsOverlappingActor(PlayerPawn))
+				{
+				}*/
+
+				/*if (TriggerBox2->IsOverlappingActor(PlayerPawn))
+				{
+					GetOwner()->SetActorRotation(CurrentRotation * -1);
+				}*/
+
+				
+				//UE_LOG(LogTemp, Warning, TEXT("Open door %s"), *GetOwner()->GetActorRotation().ToString());
+				//UE_LOG(LogTemp, Warning, TEXT("Doorlastopen %f"), &DoorLastOpened);
+				//if (CurrentRotation == FinalRotation)
+				/*{
+					DoorState = EDoorState::DS_Open;
+					bDoorIsOpen = true;
+				}*/
+	
+//}
+
+//void UDoorInteractionComponent::CloseDoor(float DeltaTime)
+//{
+//	CurrentRotationTime += DeltaTime;
+//	//UE_LOG(LogTemp, Warning, TEXT("RotationTime %f"), CurrentRotationTime);
+//
+//	const float TimeRatio = FMath::Clamp(CurrentRotationTime / TimeToRotate, 0.0f, 3.0f);
+//	const float RotationAlpha = OpenCurve.GetRichCurveConst()->Eval(TimeRatio);
+//	const FRotator CurrentRotation = FMath::Lerp(FinalRotation, StartRotation, RotationAlpha);
+//	GetOwner()->SetActorRotation(CurrentRotation);
+//	//UE_LOG(LogTemp, Warning, TEXT("Close Door %s"), *GetOwner()->GetActorRotation().ToString());
+//	DoorState = EDoorState::DS_Closed;
+//	bDoorIsOpen = false;
+//	CurrentRotationTime = 0;
+//	
+//}
