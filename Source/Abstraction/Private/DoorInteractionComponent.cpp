@@ -40,20 +40,8 @@ void UDoorInteractionComponent::BeginPlay()
 	StartRotation = GetOwner()->GetActorRotation();	//initialyaw
 	FinalRotation = GetOwner()->GetActorRotation() + DesiredRotation; //closedyaw
 	const FRotator CurrentRotation = FRotator::ZeroRotator;
-	
-	
-
-	/*GetOwner()->SetActorRotation(DesiredRotation);*/
 	CurrentRotationTime = 0.0f;
 
-	UObjectiveWorldSubsystem* ObjectiveWorldSubsystem = GetWorld()->GetSubsystem<UObjectiveWorldSubsystem>();
-	if (ObjectiveWorldSubsystem)
-	{
-		OpenedEvent.AddUObject(ObjectiveWorldSubsystem, &UObjectiveWorldSubsystem::OnObjectiveCompleted); //bind openedevent to Uobject(objworld subsystem) and the function within it
-	}
-
-	// ...
-	
 }
 
 
@@ -82,18 +70,29 @@ void UDoorInteractionComponent::TickComponent(float DeltaTime, ELevelTick TickTy
 				const float RotationAlpha = OpenCurve.GetRichCurveConst()->Eval(TimeRatio);
 				const FRotator CurrentRotation = FMath::Lerp(CurrentRotation, FinalRotation, RotationAlpha);
 				GetOwner()->SetActorRotation(CurrentRotation);
+				
 
 				if (TimeRatio >= 1.0f)
 				{
-					DoorState = EDoorState::DS_Open;
-					GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, TEXT("DoorOpened"));
-					OpenedEvent.Broadcast();
+					/*DoorState = EDoorState::DS_Open*/;
+					OnDoorOpen();
 				}
 		//OpenDoor(DeltaTime);
 	}
 
 
 	DebugDraw();
+}
+
+void UDoorInteractionComponent::OnDoorOpen()
+{
+	DoorState = EDoorState::DS_Open;
+	UObjectiveComponent* ObjectiveComponent = GetOwner()->FindComponentByClass<UObjectiveComponent>();
+	if (ObjectiveComponent)
+	{
+		ObjectiveComponent->SetState(EObjectiveState::OS_Completed);
+	}
+	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, TEXT("Door Opened!"));
 }
 
 
@@ -110,6 +109,7 @@ void UDoorInteractionComponent::DebugDraw()
 		FVector StartLocation = GetOwner()->GetActorLocation() + Offset;
 		FString EnumAsString = TEXT("Door State: ") + UEnum::GetDisplayValueAsText(DoorState).ToString();
 		DrawDebugString(GetWorld(), Offset, EnumAsString, GetOwner(), FColor::Blue, 2.0f);
+
 	}
 }
 

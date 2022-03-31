@@ -70,7 +70,7 @@ protected:
 	UPROPERTY(BlueprintReadOnly)
 		EDoorState DoorState;
 
-
+	void OnDoorOpen();
 
 
 	//void OpenDoor(float DeltaTime);
