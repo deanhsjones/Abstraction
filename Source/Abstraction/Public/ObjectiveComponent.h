@@ -48,6 +48,8 @@ protected:
 	UPROPERTY(EditAnywhere)
 		EObjectiveState State;
 
+	void InitializeComponent() override;
+
 	FStateChanged StateChangedEvent;
 
 //public:	

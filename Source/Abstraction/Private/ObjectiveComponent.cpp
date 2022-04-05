@@ -54,6 +54,17 @@ void UObjectiveComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 }
 
 
+
+void UObjectiveComponent::InitializeComponent()
+{
+	Super::InitializeComponent();
+	UObjectiveWorldSubsystem* ObjectiveWorldSubsystem = GetWorld()->GetSubsystem<UObjectiveWorldSubsystem>();
+	if (ObjectiveWorldSubsystem)
+	{
+		ObjectiveWorldSubsystem->AddObjective(this);
+	}
+}
+
 //// Called every frame
 //void UObjectiveComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 //{
