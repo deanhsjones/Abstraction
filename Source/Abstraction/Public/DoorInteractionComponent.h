@@ -17,6 +17,7 @@ enum class EDoorState
 	DS_Opening = 1	UMETA(DisplayName = "Opening"),
 	DS_Open = 2		UMETA(DisplayName = "Open"), 
 	DS_Locked = 3	UMETA(DisplayName = "Locked"),
+	DS_Closing = 4	UMETA(DisplayName = "Closing"),
 };
 
 
@@ -62,6 +63,8 @@ protected:
 		ATriggerBox* TriggerBox1;
 	UPROPERTY(EditAnywhere)
 		ATriggerBox* TriggerBox2;
+	UPROPERTY(EditAnywhere)
+		ATriggerBox* TriggerBox3;
 
 
 	UPROPERTY(EditAnywhere)
