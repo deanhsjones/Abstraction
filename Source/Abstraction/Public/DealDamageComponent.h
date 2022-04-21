@@ -25,6 +25,11 @@ public:
 	UFUNCTION()
 		void OnOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
+	UCapsuleComponent* GetTriggerCapsule() const { return TriggerCapsule; }
+
+	bool IsActive() const { return bActive; }
+	void SetActive(bool IsActive) { bActive = IsActive; }
+
 protected:
 
 	UPROPERTY(EditAnywhere)
@@ -32,4 +37,7 @@ protected:
 
 	UPROPERTY(EditAnywhere, NoClear)
 	UCapsuleComponent* TriggerCapsule;
+
+	UPROPERTY(VisibleAnywhere)
+	bool bActive = true;
 };

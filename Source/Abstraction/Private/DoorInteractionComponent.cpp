@@ -50,6 +50,11 @@ void UDoorInteractionComponent::TickComponent(float DeltaTime, ELevelTick TickTy
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
+	if (DoorState == EDoorState::DS_Locked)
+	{
+		return;
+	}
+
 	if (DoorState == EDoorState::DS_Closed)
 	{
 		if (TriggerBox1 && GetWorld() && GetWorld()->GetFirstLocalPlayerFromController())
