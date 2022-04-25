@@ -8,6 +8,9 @@
 
 class UHealthComponent;
 
+DECLARE_MULTICAST_DELEGATE(FOnInteractionStart);
+DECLARE_MULTICAST_DELEGATE(FOnInteractionCancel);
+
 UCLASS()
 class ABSTRACTION_API AAbstractionPlayerCharacter : public ACharacter
 {
@@ -15,7 +18,7 @@ class ABSTRACTION_API AAbstractionPlayerCharacter : public ACharacter
 
 public:
 	// Sets default values for this character's properties
-	AAbstractionPlayerCharacter();
+	AAbstractionPlayerCharacter(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -27,6 +30,12 @@ public:
 	void FellOutOfWorld(const class UDamageType& dmgType) override;
 
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
+
+	FOnInteractionStart OnInteractionStart;
+	FOnInteractionCancel OnInteractionCancel;
+
+	void StartInteraction();
+	void StopInteraction();
 
 protected:
 	// Called when the game starts or when spawned

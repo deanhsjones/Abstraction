@@ -6,8 +6,9 @@
 #include "Engine/TriggerBox.h"
 #include "Engine/World.h"
 #include "ObjectiveWorldSubsystem.h"
-
 #include "DrawDebugHelpers.h"
+#include "ObjectiveComponent.h"
+#include "InteractionComponent.h"
 
 constexpr float FLT_METERS(float meters) { return meters * 100.0f; }
 
@@ -28,6 +29,15 @@ UDoorInteractionComponent::UDoorInteractionComponent()
 	CVarToggleDebugDoor.AsVariable()->SetOnChangedCallback(FConsoleVariableDelegate::CreateStatic(UDoorInteractionComponent::OnDebugToggled));
 
 	// ...
+}
+
+void UDoorInteractionComponent::InteractionStart()
+{
+	Super::InteractionStart();
+	if (InteractingActor)
+	{
+		OpenDoor();
+	}
 }
 
 
@@ -142,6 +152,7 @@ void UDoorInteractionComponent::OnDoorOpen()
 		ObjectiveComponent->SetState(EObjectiveState::OS_Completed);
 	}
 	//GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, TEXT("Door Opened!"));
+	InteractionSuccess.Broadcast();
 }
 
 
