@@ -33,7 +33,8 @@ public:
 protected:
 
 	UPROPERTY(EditAnywhere)
-	float BaseDamage = 50.0f;
+	float BaseDamage = 20.0f;
+	
 
 	UPROPERTY(EditAnywhere, NoClear)
 	UCapsuleComponent* TriggerCapsule;

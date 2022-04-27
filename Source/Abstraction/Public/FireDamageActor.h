@@ -31,6 +31,7 @@ public:
 		float ToggleTime = 5.0f;
 
 	float CurrentTimer = 0.0f;
+	float BurningDamage = 5.f;
 
 	UPROPERTY(EditAnywhere)
 	UDealDamageComponent* DealDamageComponent;

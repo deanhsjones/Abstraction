@@ -5,6 +5,8 @@
 #include "DealDamageComponent.h"
 #include "Particles/ParticleSystemComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "AbstractionPlayerCharacter.h"
+#include "GameFramework/DamageType.h"
 
 // Sets default values
 AFireDamageActor::AFireDamageActor()
@@ -26,6 +28,7 @@ AFireDamageActor::AFireDamageActor()
 void AFireDamageActor::BeginPlay()
 {
 	Super::BeginPlay();
+
 	
 }
 
@@ -37,11 +40,22 @@ void AFireDamageActor::Tick(float DeltaTime)
 	CurrentTimer += DeltaTime;
 	if (CurrentTimer >= ToggleTime)
 	{
+		DealDamageComponent->ToggleActive();
+
 		if (ParticleSystemComponent)
 		{
 			ParticleSystemComponent->ToggleActive();
 		}
-		DealDamageComponent->ToggleActive();
+
+		AAbstractionPlayerCharacter* PlayerCharacter;
+		if (IsOverlappingActor(PlayerCharacter))
+		{
+			TSubclassOf<UDamageType> const ValidDamageTypeClass = TSubclassOf<UDamageType>(UDamageType::StaticClass());
+			FDamageEvent DamageEvent(ValidDamageTypeClass);
+
+			PlayerCharacter->TakeDamage(BurningDamage, DamageEvent, nullptr, GetOwner());
+		}
+		
 		CurrentTimer = 0.0f;
 	}
 
