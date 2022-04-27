@@ -10,6 +10,7 @@
 #include "ObjectiveWorldSubsystem.generated.h"
 
 class UObjectiveComponent;
+class UObjectiveHud;
 
 /**
  * 
@@ -20,24 +21,40 @@ class ABSTRACTION_API UObjectiveWorldSubsystem : public UWorldSubsystem
 	GENERATED_BODY()
 
 public:
-	void CreateObjectiveWidget(TSubclassOf<UUserWidget> ObjectiveWidgetClass);
-	void DisplayObjectiveWidget();
 
-	//void OnObjectiveCompleted();
+
+	void OnObjectiveCompleted();
 
 	UFUNCTION(BlueprintCallable)
 		FString GetCurrentObjectiveDescription();
 
 	UFUNCTION(BlueprintCallable)
-		void AddObjective(UObjectiveComponent* ObjectiveComponent);
+	void AddObjective(UObjectiveComponent* ObjectiveComponent);
 
 	UFUNCTION(BlueprintCallable)
 		void RemoveObjective(UObjectiveComponent* ObjectiveComponent);
 
+	void OnMapStart();
+	
+protected:
+
+	virtual void Deinitialize() override;
+	
+	void CreateObjectiveWidgets();
+
+	void DisplayObjectiveWidget();
+	void RemoveObjectiveWidget();
+
+	void DisplayObjectivesCompleteWidget();
+	void RemoveObjectivesCompleteWidget();
+
+	uint32 GetCompletedObjectiveCount();
+
 	void OnObjectiveStateChanged(UObjectiveComponent* ObjectiveComponent, EObjectiveState ObjectiveState);
 
 private:
-	UUserWidget* ObjectiveWidget = nullptr;
+	UObjectiveHud* ObjectiveWidget = nullptr;
+	UUserWidget* ObjectivesCompleteWidget = nullptr;
 
 	TArray<UObjectiveComponent*> Objectives;
 	
