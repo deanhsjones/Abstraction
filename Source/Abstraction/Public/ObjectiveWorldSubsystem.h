@@ -34,6 +34,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 		void RemoveObjective(UObjectiveComponent* ObjectiveComponent);
 
+	UFUNCTION(BlueprintCallable)
 	void OnMapStart();
 	
 protected:

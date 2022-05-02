@@ -14,9 +14,12 @@ class ABSTRACTION_API UObjectiveHud : public UUserWidget
 	GENERATED_BODY()
 public:
 	void UpdateObjectiveText(uint32 ObjectivesCompleted, uint32 TotalObjectives);
+	/*void UpdateCompletedObjectiveText(uint32 ObjectivesCompleted, uint32 TotalObjectives);*/
 protected:
 
 	UPROPERTY(BlueprintReadOnly, Meta = (BindWidget))
 	UTextBlock* ObjectivesText;
+
+
 	
 };

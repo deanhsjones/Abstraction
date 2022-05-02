@@ -14,14 +14,7 @@ void UObjectiveWorldSubsystem::Deinitialize()
 	ObjectivesCompleteWidget = nullptr;
 }
 
-//void UObjectiveWorldSubsystem::CreateObjectiveWidget(TSubclassOf<UUserWidget> ObjectiveWidgetClass)
-//{
-//	if (ObjectiveWidget == nullptr)
-//	{
-//		APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
-//		ObjectiveWidget = CreateWidget<UUserWidget>(PlayerController, ObjectiveWidgetClass);
-//	}
-//}
+
 
 
 void UObjectiveWorldSubsystem::CreateObjectiveWidgets()
@@ -43,8 +36,11 @@ void UObjectiveWorldSubsystem::DisplayObjectiveWidget()
 {
 	if (ObjectiveWidget)
 	{
-		ObjectiveWidget->AddToViewport();
-		ObjectiveWidget->UpdateObjectiveText(GetCompletedObjectiveCount(), Objectives.Num());
+		if (!ObjectiveWidget->IsInViewport())
+		{
+			ObjectiveWidget->AddToViewport();
+		}
+			ObjectiveWidget->UpdateObjectiveText(GetCompletedObjectiveCount(), Objectives.Num());
 
 	}
 	/*ensureMsgf(ObjectiveWidget, TEXT("UObjectiveWorldSubsystem::DisplayObjectiveWidget ObjectiveWidget is a nullptr"));*/
@@ -67,6 +63,7 @@ void UObjectiveWorldSubsystem::DisplayObjectivesCompleteWidget()
 	if (ObjectivesCompleteWidget)
 	{
 		ObjectivesCompleteWidget->AddToViewport();
+	
 	}
 }
 
@@ -153,9 +150,9 @@ void UObjectiveWorldSubsystem::OnObjectiveStateChanged(UObjectiveComponent* UObj
 			RemoveObjectiveWidget();
 			DisplayObjectivesCompleteWidget();
 		}
-		else
-		{
+		//else
+		//{
 			DisplayObjectiveWidget();
-		}
+		//}
 	}
 }

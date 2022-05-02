@@ -19,21 +19,7 @@ UObjectiveComponent::UObjectiveComponent()
 
 
 
-// Called when the game starts
-//void UObjectiveComponent::BeginPlay()
-//{
-//	Super::BeginPlay();
-//
-//	//register
-//	UObjectiveWorldSubsystem* ObjectiveWorldSubsystem = GetWorld()->GetSubsystem<UObjectiveWorldSubsystem>();
-//	if (ObjectiveWorldSubsystem)
-//	{
-//		ObjectiveWorldSubsystem->AddObjective(this);
-//	}
-//
-//	// ...
-//	
-//}
+
 
 void UObjectiveComponent::SetState(EObjectiveState NewState)
 {
@@ -46,7 +32,7 @@ void UObjectiveComponent::SetState(EObjectiveState NewState)
 
 void UObjectiveComponent::InitializeComponent()
 {
-	Super::InitializeComponent();
+	/*Super::InitializeComponent();*/
 	UObjectiveWorldSubsystem* ObjectiveWorldSubsystem = GetWorld()->GetSubsystem<UObjectiveWorldSubsystem>();
 	if (ObjectiveWorldSubsystem)
 	{

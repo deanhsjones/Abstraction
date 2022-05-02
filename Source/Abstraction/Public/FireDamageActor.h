@@ -25,7 +25,7 @@ protected:
 
 public:	
 	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+	virtual void Tick(float deltatime) override;
 
 	UPROPERTY(EditAnywhere)
 		float ToggleTime = 5.0f;

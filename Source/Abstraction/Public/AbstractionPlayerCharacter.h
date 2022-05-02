@@ -8,6 +8,7 @@
 
 class UHealthComponent;
 class UParticleSystemComponent;
+class UDamageHandlerComponent;
 
 DECLARE_MULTICAST_DELEGATE(FOnInteractionStart);
 DECLARE_MULTICAST_DELEGATE(FOnInteractionCancel);
@@ -27,6 +28,8 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	void SetOnFire(float BaseDamage, float DamageTotalTime, float TakeDamageInterval);
+
 	/** Called when the actor falls out of the world 'safely' (below KillZ and such) */
 	void FellOutOfWorld(const class UDamageType& dmgType) override;
 
@@ -35,7 +38,11 @@ public:
 	FOnInteractionStart OnInteractionStart;
 	FOnInteractionCancel OnInteractionCancel;
 
-	
+		UPROPERTY(EditAnywhere)
+	UParticleSystemComponent* ParticleSystemComponent;
+
+	UPROPERTY(EditAnywhere)
+	UDamageHandlerComponent* DamageHandlerComponent;
 
 protected:
 	// Called when the game starts or when spawned
@@ -47,6 +54,8 @@ protected:
 	void StopInteraction();
 
 	UPROPERTY(EditAnywhere)
-		UHealthComponent* HealthComponent;
+	UHealthComponent* HealthComponent;
+
+
 
 };

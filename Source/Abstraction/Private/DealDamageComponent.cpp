@@ -23,30 +23,24 @@ UDealDamageComponent::UDealDamageComponent()
 	// ...
 }
 
-
+void UDealDamageComponent::BeginPlay()
+{
+	Super::BeginPlay();
+}
 
 
 void UDealDamageComponent::OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-
-	if (!bActive)
-	{
-		return;
-	}
-
 	UE_LOG(LogTemp, Warning, TEXT("UDealDamageComponent::OnOverlapBegin"));
 
 	if (OtherActor == GetOwner()) { return; }
 
+	if (!IsActive()) { return;	}
+	
 	AAbstractionPlayerCharacter* PlayerCharacter = Cast<AAbstractionPlayerCharacter>(OtherActor);
 	if (PlayerCharacter)
 	{
-		TSubclassOf<UDamageType> const ValidDamageTypeClass = TSubclassOf<UDamageType>(UDamageType::StaticClass());
-		FDamageEvent DamageEvent(ValidDamageTypeClass);
-
-		PlayerCharacter->TakeDamage(BaseDamage, DamageEvent, nullptr, GetOwner());
-		
-
+		PlayerCharacter->SetOnFire(BaseDamage, DamageTotalTime, TakeDamageInterval);
 	}
 }
 

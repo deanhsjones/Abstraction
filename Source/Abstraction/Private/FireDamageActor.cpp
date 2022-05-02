@@ -46,8 +46,8 @@ void AFireDamageActor::Tick(float DeltaTime)
 		{
 			ParticleSystemComponent->ToggleActive();
 		}
-
-		AAbstractionPlayerCharacter* PlayerCharacter;
+			
+		AAbstractionPlayerCharacter* PlayerCharacter = Cast<AAbstractionPlayerCharacter>(GetWorld()->GetFirstPlayerController()->GetCharacter());
 		if (IsOverlappingActor(PlayerCharacter))
 		{
 			TSubclassOf<UDamageType> const ValidDamageTypeClass = TSubclassOf<UDamageType>(UDamageType::StaticClass());

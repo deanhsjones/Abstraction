@@ -21,6 +21,8 @@ public:
 
 	UPROPERTY(EditDefaultsOnly)
 		TSubclassOf<UUserWidget> ObjectivesCompleteWidgetClass;
+
+	/*UUserWidget* ObjectiveWidget = nullptr;*/
 	
 
 	//AAbstractionGameModeBase();

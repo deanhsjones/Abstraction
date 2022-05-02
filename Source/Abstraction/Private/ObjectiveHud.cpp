@@ -12,3 +12,5 @@ void UObjectiveHud::UpdateObjectiveText(uint32 ObjectivesCompleted, uint32 Total
 	}
 }
 
+
+
