@@ -38,7 +38,13 @@ public:
 	FOnInteractionStart OnInteractionStart;
 	FOnInteractionCancel OnInteractionCancel;
 
-		UPROPERTY(EditAnywhere)
+	UFUNCTION(BlueprintCallable)
+		const bool IsAlive() const;
+
+	UFUNCTION(BlueprintCallable)
+		const float GetCurrentHealth() const;
+
+	UPROPERTY(EditAnywhere)
 	UParticleSystemComponent* ParticleSystemComponent;
 
 	UPROPERTY(EditAnywhere)

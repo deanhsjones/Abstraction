@@ -78,6 +78,24 @@ void AAbstractionPlayerCharacter::FellOutOfWorld(const UDamageType& dmgType)
 	OnDeath(true);
 }
 
+const bool AAbstractionPlayerCharacter::IsAlive() const
+{
+	if (HealthComponent)
+	{
+		return !HealthComponent->IsDead();
+	}
+	return true;
+}
+
+const float AAbstractionPlayerCharacter::GetCurrentHealth() const
+{
+	if (HealthComponent)
+	{
+		return HealthComponent->GetCurrentHealth();
+	}
+	return 0.0f;
+}
+
 void AAbstractionPlayerCharacter::OnDeath(bool IsFellOut)
 {
 	APlayerController* PlayerController = GetController<APlayerController>();

@@ -18,6 +18,7 @@ public:
 
 	void TakeDamage(float Damage) { CurrentHealth -= Damage; }
 	bool IsDead() { return CurrentHealth <= FLT_EPSILON; }
+	const float GetCurrentHealth() const { return CurrentHealth; }
 
 protected:
 	// Called when the game starts
@@ -28,9 +29,5 @@ protected:
 
 	float CurrentHealth = 0.0f;
 
-//public:	
-//	// Called every frame
-//	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-//
-//		
+	
 };
