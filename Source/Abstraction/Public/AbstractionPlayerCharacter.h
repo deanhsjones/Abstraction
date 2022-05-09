@@ -56,11 +56,19 @@ protected:
 
 	void OnDeath(bool IsFellOut);
 
+	UFUNCTION()
+	void OnDeathTimerFinished();
+
 	void StartInteraction();
 	void StopInteraction();
 
 	UPROPERTY(EditAnywhere)
 	UHealthComponent* HealthComponent;
+
+	UPROPERTY(EditAnywhere)
+	float TimeRestartLevelAfterDeath = 2.0f;
+
+	FTimerHandle RestartLevelTimerHandle;
 
 
 

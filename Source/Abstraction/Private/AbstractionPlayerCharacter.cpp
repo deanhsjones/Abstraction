@@ -98,6 +98,11 @@ const float AAbstractionPlayerCharacter::GetCurrentHealth() const
 
 void AAbstractionPlayerCharacter::OnDeath(bool IsFellOut)
 {
+	GetWorld()->GetTimerManager().SetTimer(RestartLevelTimerHandle, this, &AAbstractionPlayerCharacter::OnDeathTimerFinished, TimeRestartLevelAfterDeath, false);
+}
+
+void AAbstractionPlayerCharacter::OnDeathTimerFinished()
+{
 	APlayerController* PlayerController = GetController<APlayerController>();
 	if (PlayerController)
 	{
