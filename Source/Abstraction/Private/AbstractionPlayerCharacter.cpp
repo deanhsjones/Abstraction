@@ -53,7 +53,7 @@ float AAbstractionPlayerCharacter::TakeDamage(float DamageAmount, struct FDamage
 {
 	float Damage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 	UE_LOG(LogTemp, Warning, TEXT("AAbstractionPlayerCharacter::TakeDamage Damage %.0f"), Damage);
-	if (HealthComponent) 
+	if (HealthComponent && !HealthComponent->IsDead()) 
 	{
 		HealthComponent->TakeDamage(Damage);
 		if (HealthComponent->IsDead())
@@ -75,7 +75,11 @@ void AAbstractionPlayerCharacter::SetOnFire(float BaseDamage, float DamageTotalT
 
 void AAbstractionPlayerCharacter::FellOutOfWorld(const UDamageType& dmgType)
 {
-	OnDeath(true);
+	if (HealthComponent && !HealthComponent->IsDead())
+	{
+		HealthComponent->SetCurrentHealth(0.0f);
+		OnDeath(true);
+	}
 }
 
 const bool AAbstractionPlayerCharacter::IsAlive() const

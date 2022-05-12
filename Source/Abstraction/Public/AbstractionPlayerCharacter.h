@@ -43,6 +43,7 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 		const float GetCurrentHealth() const;
+	
 
 	UPROPERTY(EditAnywhere)
 	UParticleSystemComponent* ParticleSystemComponent;
@@ -69,6 +70,8 @@ protected:
 	float TimeRestartLevelAfterDeath = 2.0f;
 
 	FTimerHandle RestartLevelTimerHandle;
+
+
 
 
 
