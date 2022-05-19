@@ -2,6 +2,7 @@
 
 
 #include "AbstractionPlayerCharacter.h"
+#include "Camera/PlayerCameraManager.h"
 #include "GameFramework/PlayerController.h"
 #include "GameFramework/DamageType.h"
 #include "HealthComponent.h"
@@ -28,6 +29,7 @@ void AAbstractionPlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	PC = GetWorld()->GetFirstPlayerController();
 
 }
 
@@ -123,3 +125,17 @@ void AAbstractionPlayerCharacter::StopInteraction()
 {
 	OnInteractionCancel.Broadcast();
 }
+
+void AAbstractionPlayerCharacter::HandleItemCollected()
+{
+	ItemsCollected++;
+	//play effects here
+	PC->PlayerCameraManager->StartCameraShake(CamShake, 1.0f);
+
+	PC->PlayDynamicForceFeedback(ForceFeedbackIntensity, ForceFeedbackDuration, true, false, true, false, EDynamicForceFeedbackAction::Start);
+
+	ItemCollected();
+}
+
+
+

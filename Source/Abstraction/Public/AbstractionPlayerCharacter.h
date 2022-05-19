@@ -43,7 +43,15 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 		const float GetCurrentHealth() const;
+
+	UFUNCTION(BlueprintCallable)
+	void HandleItemCollected();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void ItemCollected();
 	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	int ItemsCollected = 0;
 
 	UPROPERTY(EditAnywhere)
 	UParticleSystemComponent* ParticleSystemComponent;
@@ -71,8 +79,16 @@ protected:
 
 	FTimerHandle RestartLevelTimerHandle;
 
+	APlayerController* PC;
 
+	UPROPERTY(EditAnywhere, Category = "Effects")
+	TSubclassOf<UCameraShakeBase>CamShake;
 
+	//Force Feedback value
 
+	UPROPERTY(EditAnywhere, Category="Force Feedback")
+	float ForceFeedbackIntensity = 1.0f;
+	UPROPERTY(EditAnywhere, Category = "Force Feedback")
+	float ForceFeedbackDuration = 1.0f;
 
 };
